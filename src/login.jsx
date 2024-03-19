@@ -12,8 +12,15 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-//import { useHistory } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+
+const auth = () => {
+  if (localStorage.getItem('token')) {
+    return true
+  } else {
+    return false
+  }
+}
 
 function Copyright(props) {
   return (
@@ -29,22 +36,9 @@ function Copyright(props) {
 }
 const defaultTheme = createTheme();
 
-
-//const navigate=useNavigate;
 export  default function Login() {
-
-  const auth=()=>{
-    if(localStorage.getItem('token')){
-      return true;
-    }else{
-      return false;
-    }
-  }
-
   const [emailValue, setEmailValue] = React.useState('');
   const [passwordValue, setPasswordValue] = React.useState('');
-  const navigate=useNavigate();
- 
   
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -63,7 +57,8 @@ export  default function Login() {
       const data = await response.json();
       console.log(data)
       if (response.ok) {
-        localStorage.setItem('token', data.token);    
+        localStorage.setItem('token', data.token.token);
+        window.location.href = './dashboard';
       } else {
         console.error(data.message);
       }
@@ -72,13 +67,10 @@ export  default function Login() {
     }
   };
 
-
-
   return (
-    
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      {auth()?navigate('/dashboard'): 
+      {auth()? <Navigate to="/dashboard" />: 
       <Grid container component="main" sx={{ height: '100vh' }}>
         <Grid
           item
